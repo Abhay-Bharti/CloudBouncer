@@ -1,0 +1,239 @@
+/* Modern Dashboard Styles */
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --background-color: #f8fafc;
+    --sidebar-color: #1e293b;
+    --text-color: #1e293b;
+    --text-light: #64748b;
+    --border-color: #e2e8f0;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--background-color);
+}
+
+/* Sidebar Styles */
+.dashboard-sidebar {
+    width: 280px;
+    background-color: var(--sidebar-color);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    flex-grow: 1;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item.active {
+    background-color: var(--primary-color);
+}
+
+.nav-icon {
+    font-size: 1.25rem;
+}
+
+.logout {
+    margin-top: auto;
+    color: var(--danger-color);
+}
+
+/* Main Content Styles */
+.dashboard-main {
+    flex-grow: 1;
+    padding: 2rem;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.profile-icon {
+    font-size: 2rem;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--card-shadow);
+}
+
+.stat-card h3 {
+    color: var(--text-light);
+    font-size: 0.875rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.stat-value {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.stat-change {
+    font-size: 0.875rem;
+    margin: 0.5rem 0 0 0;
+}
+
+.stat-change.positive {
+    color: var(--success-color);
+}
+
+.stat-change.negative {
+    color: var(--danger-color);
+}
+
+/* Charts Container */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--card-shadow);
+}
+
+.chart-card h3 {
+    color: var(--text-color);
+    font-size: 1.125rem;
+    margin: 0 0 1rem 0;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+.chart-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Bottom Section */
+.bottom-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.blocked-ips-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--card-shadow);
+}
+
+.blocked-ips-card h3 {
+    color: var(--text-color);
+    font-size: 1.125rem;
+    margin: 0 0 1rem 0;
+}
+
+.blocked-ips-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .dashboard-sidebar {
+        width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .dashboard-sidebar {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .nav-item {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .dashboard-main {
+        padding: 1rem;
+    }
+
+    .charts-container,
+    .bottom-section {
+        grid-template-columns: 1fr;
+    }
+}
