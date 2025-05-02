@@ -14,7 +14,7 @@ import axiosInstance from "../utils/axiosInstance";
 import './LandingPage.css';
 
 export default function LandingPage() {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const features = [
@@ -35,24 +35,24 @@ export default function LandingPage() {
         }
     ];
 
-    useEffect(() => {
-        const fetchIpAndCheck = async () => {
-            try {
-                const response = await axiosInstance.get('/');
-                if (response.data.isBlocked === true) {
-                    console.log(response.data.isBlocked);
-                    navigate('/denied');
-                } else {
-                    setLoading(false);
-                }
-            } catch (error) {
-                console.error("Error checking IP address", error);
-                setLoading(false);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchIpAndCheck = async () => {
+    //         try {
+    //             const response = await axiosInstance.get('/');
+    //             if (response.data.isBlocked === true) {
+    //                 console.log(response.data.isBlocked);
+    //                 navigate('/denied');
+    //             } else {
+    //                 setLoading(false);
+    //             }
+    //         } catch (error) {
+    //             console.error("Error checking IP address", error);
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchIpAndCheck();
-    }, [navigate]);
+    //     fetchIpAndCheck();
+    // }, [navigate]);
 
     if (loading) {
         return <div>Checking IP...</div>;
