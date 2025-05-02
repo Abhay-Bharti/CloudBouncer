@@ -1,1 +1,1 @@
-export const BASE_URL = `http://localhost:8000`;
+export const BASE_URL = `https://cloud-bouncer-backend.vercel.app/`;
