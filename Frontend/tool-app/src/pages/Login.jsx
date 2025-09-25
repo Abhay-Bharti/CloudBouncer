@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Form, Container } from 'react-bootstrap';
 import "../App.css"
@@ -7,6 +7,7 @@ import { validateEmail } from "../utils/utils";
 import axiosInstance from "../utils/axiosInstance";
 import { toast, ToastContainer } from 'react-toastify'; // Import ToastContainer
 import 'react-toastify/dist/ReactToastify.css';
+import './Login.css';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -63,47 +64,56 @@ export default function Login() {
     return (
         <>
             <NavbarScroll />
-            <div className="d-flex justify-content-center align-items-center login-box">
+            <div className="login-page">
                 <Container className="login-container">
-                    <h1 className="text-center mb-5">Login</h1>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Email address</Form.Label>
+                    <div className="login-header">
+                        <svg className="login-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        <h1 className="login-title">Login to Your Account</h1>
+                    </div>
+                    {error && (
+                        <div className="error-message">
+                            {error}
+                        </div>
+                    )}
+                    <Form onSubmit={handleSubmit} className="login-form">
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label className="form-label">Email address</Form.Label>
                             <Form.Control
                                 type="email"
                                 placeholder="Enter email"
                                 name="email"
                                 onChange={handleInput}
                                 value={credentials.email}
-                                required={true}
+                                required
+                                className="form-input"
                             />
-                            <Form.Text className="text-muted">
-                                We'll never share your email with anyone else.
+                            <Form.Text className="form-text">
+                                We&apos;ll never share your email with anyone else.
                             </Form.Text>
                         </Form.Group>
-
-                        <Form.Group className="mb-3" controlId="formBasicPassword">
-                            <Form.Label>Password</Form.Label>
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Label className="form-label">Password</Form.Label>
                             <Form.Control
                                 type="password"
                                 placeholder="Enter Password"
                                 name="password"
                                 onChange={handleInput}
                                 value={credentials.password}
-                                required={true}
+                                required
                                 minLength={8}
+                                className="form-input"
                             />
                         </Form.Group>
-
-                        <div className='mb-2'>Do not have an account? Click <Link to={"/signup"}>here</Link></div>
-                        <Button variant="primary" type="submit">
-                            Submit
+                        <div className="signup-link-container">
+                            Do not have an account? <Link to="/signup" className="signup-link">Sign up here</Link>
+                        </div>
+                        <Button variant="primary" type="submit" className="login-btn">
+                            Login
                         </Button>
                     </Form>
                 </Container>
             </div>
-
             <ToastContainer />
         </>
-    )
-}
+    );
+}          
