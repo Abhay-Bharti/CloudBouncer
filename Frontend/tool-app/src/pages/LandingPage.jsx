@@ -38,7 +38,7 @@ export default function LandingPage() {
     useEffect(() => {
         const fetchIpAndCheck = async () => {
             try {
-                const response = await axiosInstance.get('/');
+                const response = await axiosInstance.get('/check-ip');
                 if (response.data.isBlocked === true) {
                     console.log(response.data.isBlocked);
                     navigate('/denied');

@@ -11,7 +11,8 @@ const {checkBlockedIp} = require("../middleware/blockIps")
 // router.get("/get-user", authenticate, userControllers.GetUser);
 
 // New routes (database-based blocked IPs)
-router.get("/", checkBlockedIp, userControllers.handleLanding);
+// Note: Removed the "/" route to avoid conflict with main API root route
+router.get("/check-ip", checkBlockedIp, userControllers.handleLanding);
 router.get("/blockedIps", userControllers.handleBlockedIps);
 router.post("/blockedIps", authenticate, userControllers.addBlockedIp);
 router.delete("/blockedIps/:ip", authenticate, userControllers.removeBlockedIp);

@@ -15,31 +15,80 @@ app.set('trust proxy', true);
 app.use(express.json());
 
 // Enhanced CORS configuration for production
-app.use(
-    cors({
-        origin: [
-            "https://cloud-bouncer.vercel.app",
-            "http://localhost:5173",
-            "http://localhost:8000",
-            "https://cloudbouncer.vercel.app"
-        ],
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: [
-            "Content-Type", 
-            "Authorization", 
-            "X-Requested-With",
-            "Accept",
-            "Origin"
-        ],
-        credentials: true,
-        optionsSuccessStatus: 200
-    })
-);
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'https://cloud-bouncer.vercel.app',
+            'https://cloudbouncer.vercel.app',
+            'http://localhost:5173',
+            'http://localhost:3000',
+            'http://localhost:8000'
+        ];
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Requested-With',
+        'Accept',
+        'Origin',
+        'Cache-Control',
+        'X-File-Name'
+    ],
+    credentials: true,
+    optionsSuccessStatus: 200,
+    preflightContinue: false
+};
 
-// Handle preflight requests
-app.options('*', cors());
+app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', 'https://cloud-bouncer.vercel.app');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(200);
+});
 
 app.use(express.urlencoded({ extended: true }));
+
+// Additional CORS middleware to ensure headers are always present
+app.use((req, res, next) => {
+    const allowedOrigins = [
+        'https://cloud-bouncer.vercel.app',
+        'https://cloudbouncer.vercel.app',
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'http://localhost:8000'
+    ];
+    
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    
+    next();
+});
 
 // Add a health check route before other routes
 app.get('/health', (req, res) => {
@@ -50,22 +99,37 @@ app.get('/health', (req, res) => {
     });
 });
 
-app.use("/", handleLog, userRoutes);
-
+// Add root route BEFORE the general middleware
 app.get('/', (req, res) => {
     res.status(200).json({
         success: true,
         message: "CloudBouncer Backend API is running successfully",
         version: "1.0.0",
         endpoints: {
+            health: "/health",
+            checkIp: "/check-ip",
             login: "/login",
             signup: "/signup", 
             blockedIps: "/blockedIps",
-            health: "/"
+            getUser: "/get-user"
         },
         timestamp: new Date().toISOString()
-    })
-})
+    });
+});
+
+// Apply routes middleware after specific routes
+app.use("/", handleLog, userRoutes);
+
+// 404 handler for unmatched routes
+app.use('*', (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found",
+        path: req.originalUrl,
+        method: req.method,
+        timestamp: new Date().toISOString()
+    });
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
