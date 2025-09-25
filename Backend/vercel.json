@@ -5,54 +5,5 @@
       "src": "./index.js",
       "use": "@vercel/node"
     }
-  ],
-  "routes": [
-    {
-      "src": "/health",
-      "dest": "/index.js"
-    },
-    {
-      "src": "/login",
-      "dest": "/index.js"
-    },
-    {
-      "src": "/signup",
-      "dest": "/index.js"
-    },
-    {
-      "src": "/blockedIps",
-      "dest": "/index.js"
-    },
-    {
-      "src": "/",
-      "dest": "/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.js"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization, X-Requested-With, Accept, Origin"
-        },
-        {
-          "key": "Access-Control-Allow-Credentials",
-          "value": "true"
-        }
-      ]
-    }
   ]
 }
