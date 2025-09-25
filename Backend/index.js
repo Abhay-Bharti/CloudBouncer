@@ -13,31 +13,59 @@ app.set('trust proxy', true);
 
 // middlewares
 app.use(express.json());
+
+// Enhanced CORS configuration for production
 app.use(
     cors({
-        origin: "*",
+        origin: [
+            "https://cloud-bouncer.vercel.app",
+            "http://localhost:5173",
+            "http://localhost:8000",
+            "https://cloudbouncer.vercel.app"
+        ],
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: [
+            "Content-Type", 
+            "Authorization", 
+            "X-Requested-With",
+            "Accept",
+            "Origin"
+        ],
+        credentials: true,
+        optionsSuccessStatus: 200
     })
 );
 
+// Handle preflight requests
+app.options('*', cors());
+
 app.use(express.urlencoded({ extended: true }));
+
+// Add a health check route before other routes
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Server is healthy",
+        timestamp: new Date().toISOString()
+    });
+});
+
 app.use("/", handleLog, userRoutes);
 
-// app.get("/blockedIps", (req, res) => {
-//     const filePath = path.join("../logs", 'blocked_ips.json');
-
-//     fs.readFile(filePath, 'utf8', (err, data) => {
-//         if (err) {
-//             return res.status(500).json({ error: 'Failed to read file' });
-//         }
-
-//         try {
-//             const jsonData = JSON.parse(data);
-//             res.json(jsonData);
-//         } catch (parseError) {
-//             res.status(500).json({ error: 'Failed to parse JSON' });
-//         }
-//     });
-// });
+app.get('/', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "CloudBouncer Backend API is running successfully",
+        version: "1.0.0",
+        endpoints: {
+            login: "/login",
+            signup: "/signup", 
+            blockedIps: "/blockedIps",
+            health: "/"
+        },
+        timestamp: new Date().toISOString()
+    })
+})
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
