@@ -1,23 +1,46 @@
 const path = require('path');
 const fs = require('fs');
 
-const logDirectory = "D:/Uploaded/Uploaded/TOOL/logs";
-if (!fs.existsSync(logDirectory)) {
-  fs.mkdirSync(logDirectory);
+// For serverless deployment (Vercel), we'll use console logging instead of file system
+const isServerless = process.env.VERCEL || process.env.NODE_ENV === 'production';
+
+let logDirectory, jsonLogFilePath;
+
+if (!isServerless) {
+  // Local development - use relative path
+  logDirectory = path.join(__dirname, "../../logs");
+  
+  if (!fs.existsSync(logDirectory)) {
+    try {
+      fs.mkdirSync(logDirectory, { recursive: true });
+    } catch (error) {
+      console.warn('Could not create logs directory:', error.message);
+    }
+  }
+  
+  jsonLogFilePath = path.join(logDirectory, "logs.json");
 }
 
-// JSON log file path
-const jsonLogFilePath = path.join(logDirectory, "logs.json");
-
-// Function to append data to a JSON file
+// Function to append data to a JSON file (only for local development)
 const appendLogToJsonFile = (data) => {
+  if (isServerless) {
+    // In serverless environment, just log to console
+    console.log('Request Log:', JSON.stringify(data, null, 2));
+    return;
+  }
+
   let logs = [];
   
   // Check if the log file already exists and read existing logs
   if (fs.existsSync(jsonLogFilePath)) {
-    const fileData = fs.readFileSync(jsonLogFilePath, 'utf8');
-    if (fileData) {
-      logs = JSON.parse(fileData);
+    try {
+      const fileData = fs.readFileSync(jsonLogFilePath, 'utf8');
+      if (fileData) {
+        logs = JSON.parse(fileData);
+      }
+    } catch (error) {
+      console.error('Error reading log file:', error.message);
+      logs = [];
     }
   }
 
@@ -25,7 +48,11 @@ const appendLogToJsonFile = (data) => {
   logs.push(data);
 
   // Write updated logs back to the JSON file
-  fs.writeFileSync(jsonLogFilePath, JSON.stringify(logs, null, 2));
+  try {
+    fs.writeFileSync(jsonLogFilePath, JSON.stringify(logs, null, 2));
+  } catch (error) {
+    console.error('Error writing to log file:', error.message);
+  }
 };
 
 // Middleware to log requests in JSON format
