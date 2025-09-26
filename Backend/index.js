@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const handleLog = require("./middleware/log");
 const userRoutes = require('./routes/user_routes');
@@ -12,6 +13,21 @@ app.set('trust proxy', true);
 
 // middlewares
 app.use(express.json());
+
+// CORS configuration without credentials
+app.use(cors({
+    origin: '*', // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Content-Type',
+        'Authorization', 
+        'X-Requested-With',
+        'Accept',
+        'Origin'
+    ],
+    credentials: false, // Explicitly disable credentials
+    optionsSuccessStatus: 200
+}));
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -31,14 +47,6 @@ app.get('/', (req, res) => {
         success: true,
         message: "CloudBouncer Backend API is running successfully",
         version: "1.0.0",
-        endpoints: {
-            health: "/health",
-            checkIp: "/check-ip",
-            login: "/login",
-            signup: "/signup", 
-            blockedIps: "/blockedIps",
-            getUser: "/get-user"
-        },
         timestamp: new Date().toISOString()
     });
 });
