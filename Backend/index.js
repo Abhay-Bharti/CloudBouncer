@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 const app = express();
 const handleLog = require("./middleware/log");
 const userRoutes = require('./routes/user_routes');
@@ -14,51 +13,7 @@ app.set('trust proxy', true);
 // middlewares
 app.use(express.json());
 
-// Simplified CORS configuration for Vercel compatibility
-app.use(
-    cors({
-        origin: true, // Allow all origins
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: [
-            'Content-Type',
-            'Authorization',
-            'X-Requested-With',
-            'Accept',
-            'Origin',
-            'Cache-Control',
-            'X-File-Name'
-        ],
-        credentials: true,
-        optionsSuccessStatus: 200,
-        preflightContinue: false
-    })
-);
-
-// Explicit preflight handler
-app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.sendStatus(200);
-});
-
 app.use(express.urlencoded({ extended: true }));
-
-// Global CORS middleware for all requests
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
-    }
-    
-    next();
-});
 
 // Add a health check route before other routes
 app.get('/health', (req, res) => {
