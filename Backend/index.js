@@ -16,16 +16,12 @@ app.use(express.json());
 
 // CORS configuration without credentials
 app.use(cors({
-    origin: '*', // Allow all origins
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-        'Content-Type',
-        'Authorization', 
-        'X-Requested-With',
-        'Accept',
-        'Origin'
+    origin: [
+        'http://localhost:5173',
+        'https://cloud-bouncer.vercel.app/',
+        'https://cloudbouncer.vercel.app/'
     ],
-    credentials: false, // Explicitly disable credentials
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     optionsSuccessStatus: 200
 }));
 
